@@ -12,7 +12,4 @@ public class OrdersInfo {
         this.orders = orders;
     }
 
-
-    //private Integer pageInfo;
-    //private List<AvailableStation> availableStations;
 }
