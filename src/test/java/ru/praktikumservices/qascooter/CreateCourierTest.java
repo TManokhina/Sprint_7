@@ -35,12 +35,12 @@ public class CreateCourierTest {
         courier.withFirstName(randomAlphabetic(15));
 
         Response createCourierResponse = createCourier(courier);
-        assertEquals("Неверный статус код при создании курьера", HTTP_CREATED, createCourierResponse.statusCode());
-
         Response loginCourierResponse = RequestUtils.login(courier);
+        courierIds.add(loginCourierResponse.as(CourierId.class).getId());
+
+        assertEquals("Неверный статус код при создании курьера", HTTP_CREATED, createCourierResponse.statusCode());
         assertEquals("Неверный статус код при аутентификации", HTTP_OK, loginCourierResponse.statusCode());
 
-        courierIds.add(loginCourierResponse.as(CourierId.class).getId());
     }
 
     @Test
