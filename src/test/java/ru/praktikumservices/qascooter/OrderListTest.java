@@ -6,8 +6,8 @@ import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
 
-import static ru.praktikumservices.qascooter.RequestUtils.BASE_URI_PATH;
-import static ru.praktikumservices.qascooter.RequestUtils.getOrder;
+import static ru.praktikumservices.qascooter.api.client.Client.BASE_URI_PATH;
+import static ru.praktikumservices.qascooter.api.client.OrderClient.getOrder;
 
 public class OrderListTest {
 

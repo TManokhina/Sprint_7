@@ -6,6 +6,8 @@ import io.restassured.response.Response;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
+import ru.praktikumservices.qascooter.api.client.Client;
+import ru.praktikumservices.qascooter.api.client.CourierClient;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -15,7 +17,6 @@ import static io.restassured.http.ContentType.JSON;
 import static java.net.HttpURLConnection.*;
 import static junit.framework.TestCase.assertEquals;
 import static org.apache.commons.lang3.RandomStringUtils.randomAlphabetic;
-import static ru.praktikumservices.qascooter.RequestUtils.*;
 
 public class CreateCourierTest {
 
@@ -23,7 +24,7 @@ public class CreateCourierTest {
 
     @Before
     public void setUp() {
-        RestAssured.baseURI = BASE_URI_PATH;
+        RestAssured.baseURI = Client.BASE_URI_PATH;
     }
 
     @Test
@@ -34,8 +35,8 @@ public class CreateCourierTest {
         courier.withPassword(randomAlphabetic(13));
         courier.withFirstName(randomAlphabetic(15));
 
-        Response createCourierResponse = createCourier(courier);
-        Response loginCourierResponse = RequestUtils.login(courier);
+        Response createCourierResponse = CourierClient.createCourier(courier);
+        Response loginCourierResponse = CourierClient.login(courier);
         courierIds.add(loginCourierResponse.as(CourierId.class).getId());
 
         assertEquals("Неверный статус код при создании курьера", HTTP_CREATED, createCourierResponse.statusCode());
@@ -50,7 +51,7 @@ public class CreateCourierTest {
         courier.withPassword(randomAlphabetic(13));
         courier.withFirstName(randomAlphabetic(15));
 
-        Response createCourierResponse = createCourier(courier);
+        Response createCourierResponse = CourierClient.createCourier(courier);
         assertEquals("Неверный статус код при создании курьера без логина", HTTP_BAD_REQUEST,
                 createCourierResponse.statusCode());
     }
@@ -62,7 +63,7 @@ public class CreateCourierTest {
         courier.withLogin(randomAlphabetic(7));
         courier.withFirstName(randomAlphabetic(15));
 
-        Response createCourierResponse = createCourier(courier);
+        Response createCourierResponse = CourierClient.createCourier(courier);
         assertEquals("Неверный статус код при создании курьера без пароля", HTTP_BAD_REQUEST,
                 createCourierResponse.statusCode());
     }
@@ -74,11 +75,11 @@ public class CreateCourierTest {
         courier.withLogin(randomAlphabetic(7));
         courier.withPassword(randomAlphabetic(13));
         courier.withFirstName(randomAlphabetic(15));
-        createCourier(courier);
-        courierIds.add(RequestUtils.login(courier).as(CourierId.class).getId());
+        CourierClient.createCourier(courier);
+        courierIds.add(CourierClient.login(courier).as(CourierId.class).getId());
 
-        Response createCourierResponse = createCourier(courier);
-        courierIds.add(RequestUtils.login(courier).as(CourierId.class).getId());
+        Response createCourierResponse = CourierClient.createCourier(courier);
+        courierIds.add(CourierClient.login(courier).as(CourierId.class).getId());
         assertEquals("Неверный статус код при создании курьера с логином, который уже есть", HTTP_CONFLICT,
                 createCourierResponse.statusCode());
     }
@@ -86,7 +87,7 @@ public class CreateCourierTest {
     @After
     public void tearDown() {
         for (Integer id : courierIds) {
-            given().contentType(JSON).delete(COURIER_PATH + "/" + id);
+            given().contentType(JSON).delete(CourierClient.COURIER_PATH + "/" + id);
         }
     }
 }

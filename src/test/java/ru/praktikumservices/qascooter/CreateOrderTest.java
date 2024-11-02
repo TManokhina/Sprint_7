@@ -8,11 +8,12 @@ import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.junit.runners.Parameterized;
+import ru.praktikumservices.qascooter.api.client.Client;
+import ru.praktikumservices.qascooter.api.client.OrderClient;
 
 import static io.restassured.RestAssured.given;
 import static io.restassured.http.ContentType.JSON;
 import static org.junit.Assert.assertNotNull;
-import static ru.praktikumservices.qascooter.RequestUtils.*;
 
 @RunWith(Parameterized.class)
 public class CreateOrderTest {
@@ -37,7 +38,7 @@ public class CreateOrderTest {
 
     @Before
     public void setUp() {
-        RestAssured.baseURI = BASE_URI_PATH;
+        RestAssured.baseURI = Client.BASE_URI_PATH;
     }
 
     @Test
@@ -45,13 +46,13 @@ public class CreateOrderTest {
     public void checkOrderCreation() {
         Order order = new Order("Might", "Guy", "Konoha, 45 apt.", "Metro5", "+7 953 355 35 35", 5, "2024-10-31",
                 "Lee will pick up the order", color);
-        Response orderResponse = createOrder(order);
+        Response orderResponse = OrderClient.createOrder(order);
         track = orderResponse.as(OrderTrack.class).getTrack();
         assertNotNull("Tело ответа не содержит track", track);
     }
 
     @After
     public void tearDown() {
-        given().contentType(JSON).put(CANCEL_ORDER_PATH + track);
+        given().contentType(JSON).put(OrderClient.CANCEL_ORDER_PATH + track);
     }
 }
